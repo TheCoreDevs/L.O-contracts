@@ -1011,7 +1011,7 @@ contract LO is Ownable, IERC2981, ERC721 {
         require(amount + amountMinted[msg.sender] < 3 && amount != 0, "Request exceeds max per wallet!");
         require(msg.value == amount * 9e16, "ETH Amount is not correct!");
 
-        amountMinted[msg.sender] += uint8(amount);
+        amountPreMinted[msg.sender] += uint8(amount);
         _mint(amount, msg.sender);
     }
 
