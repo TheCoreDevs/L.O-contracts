@@ -1077,9 +1077,9 @@ contract LO is Ownable, IERC2981, ERC721 {
     function withdraw() onlyOwner external {
         uint bal = address(this).balance;
         bool success;
-        (success, ) = payable(msg.sender).call{value: (bal * 93) / 100, gas: 3000}("");
+        (success, ) = payable(msg.sender).call{value: (bal * 92) / 100, gas: 3000}("");
         require(success, "Transfer to contract owner failed!");
-        (success, ) = payable(0xC52a2331679404cB7DE9405e15303eEf122280A6).call{value: (bal * 7) / 100, gas: 3000}("");
+        (success, ) = payable(0xC52a2331679404cB7DE9405e15303eEf122280A6).call{value: (bal * 8) / 100, gas: 3000}("");
         require(success, "Transfer to core devs failed!");
         
     }
