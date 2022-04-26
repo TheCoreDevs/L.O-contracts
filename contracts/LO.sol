@@ -791,8 +791,7 @@ contract ERC721 is ERC165, IERC721, IERC721Metadata, Ownable {
      *
      * Emits a {Transfer} event.
      */
-    function _mint(uint256 amount, address to) internal {
-        uint tokenId = totalSupply;
+    function _mint(uint256 amount, address to, uint tokenId) internal {
 
         _balances[to] += amount;
 
@@ -933,8 +932,8 @@ contract LO is Ownable, IERC2981, ERC721 {
 
     uint private EIP2981RoyaltyPercent;
 
-    mapping (address => uint8) private amountPreMinted;
-    mapping (address => uint8) private amountMinted;
+    mapping (address => uint8) public amountPreMinted;
+    mapping (address => uint8) public amountMinted;
 
     constructor(
         uint _royalty,
@@ -945,8 +944,9 @@ contract LO is Ownable, IERC2981, ERC721 {
     }
 
     function mintFromReserve(uint amount, address to) external onlyOwner {
-        require(amount + totalSupply < 501);
-        _mint(amount, to);
+        uint tokenId = totalSupply;
+        require(amount + tokenId < 5556);
+        _mint(amount, to, tokenId);
     }
 
     function batchMintFromReserve(uint[] memory amount, address[] memory to) external onlyOwner {
@@ -980,25 +980,26 @@ contract LO is Ownable, IERC2981, ERC721 {
             total += cAmount;
         }
 
-        require(tokenId < 501, "Exceeds reserve!");
+        require(tokenId < 5556, "Exceeds reserve!");
 
         totalSupply += uint16(total);
     }
 
     function mint(uint256 amount) external payable {
         require(_mintingEnabled, "Minting is not enabled!");
-        require(amount + totalSupply < 5556, "Request exceeds max supply!");
+        uint tokenId = totalSupply;
+        require(amount + tokenId < 5556, "Request exceeds max supply!");
         require(amount + amountMinted[msg.sender] < 3 && amount != 0, "Request exceeds max per wallet!");
         require(msg.value == amount * 9e16, "ETH Amount is not correct!");
 
         amountMinted[msg.sender] += uint8(amount);
-        _mint(amount, msg.sender);
+        _mint(amount, msg.sender, tokenId);
     }
 
     function famMint(bytes calldata sig) external payable {
         require(_onlyWhiteList, "Minting is not enabled!");
         require(_checkFamSig(msg.sender, sig), "User not whitelisted!");
-        require(amountMinted[msg.sender] == 0, "Request exceeds max per wallet!");
+        require(amountPreMinted[msg.sender] == 0, "Request exceeds max per wallet!");
         require(msg.value == 9e16, "ETH Amount is not correct!");
 
         amountPreMinted[msg.sender]++;
@@ -1008,11 +1009,11 @@ contract LO is Ownable, IERC2981, ERC721 {
     function ogMint(bytes calldata sig, uint256 amount) external payable {
         require(_onlyWhiteList, "Minting is not enabled!");
         require(_checkOgSig(msg.sender, sig), "User not whitelisted!");
-        require(amount + amountMinted[msg.sender] < 3 && amount != 0, "Request exceeds max per wallet!");
+        require(amount + amountPreMinted[msg.sender] < 3 && amount != 0, "Request exceeds max per wallet!");
         require(msg.value == amount * 9e16, "ETH Amount is not correct!");
 
         amountPreMinted[msg.sender] += uint8(amount);
-        _mint(amount, msg.sender);
+        _mint(amount, msg.sender, totalSupply);
     }
 
     function _checkOgSig(address _wallet, bytes memory _signature) private view returns(bool) {
