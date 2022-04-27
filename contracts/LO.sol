@@ -810,8 +810,7 @@ contract ERC721 is ERC165, IERC721, IERC721Metadata, Ownable {
         ); // checking it once will make sure that the address can recieve NFTs
     }
 
-    function _mint(address to) internal {
-        uint tokenId = totalSupply + 1;
+    function _mint(address to, uint tokenId) internal {
 
         _balances[to]++;
         _owners[tokenId] = to;
@@ -999,21 +998,25 @@ contract LO is Ownable, IERC2981, ERC721 {
     function famMint(bytes calldata sig) external payable {
         require(_onlyWhiteList, "Minting is not enabled!");
         require(_checkFamSig(msg.sender, sig), "User not whitelisted!");
+        uint tokenId = totalSupply + 1;
+        require(tokenId < 5556, "Request exceeds max supply!");
         require(amountPreMinted[msg.sender] == 0, "Request exceeds max per wallet!");
         require(msg.value == 9e16, "ETH Amount is not correct!");
 
         amountPreMinted[msg.sender]++;
-        _mint(msg.sender);
+        _mint(msg.sender, tokenId);
     }
 
     function ogMint(bytes calldata sig, uint256 amount) external payable {
         require(_onlyWhiteList, "Minting is not enabled!");
         require(_checkOgSig(msg.sender, sig), "User not whitelisted!");
+        uint tokenId = totalSupply;
+        require(amount + tokenId < 5556, "Request exceeds max supply!");
         require(amount + amountPreMinted[msg.sender] < 3 && amount != 0, "Request exceeds max per wallet!");
         require(msg.value == amount * 9e16, "ETH Amount is not correct!");
 
         amountPreMinted[msg.sender] += uint8(amount);
-        _mint(amount, msg.sender, totalSupply);
+        _mint(amount, msg.sender, tokenId);
     }
 
     function _checkOgSig(address _wallet, bytes memory _signature) private view returns(bool) {
