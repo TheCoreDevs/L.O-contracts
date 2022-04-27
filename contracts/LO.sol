@@ -8,7 +8,7 @@ pragma solidity ^0.8.7;
  * @author The Core Devs (@TheCoreDevs)
  */
 
- 
+
 // File: contracts/Ownable.sol
 
 /**
