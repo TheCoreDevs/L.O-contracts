@@ -1083,7 +1083,7 @@ contract LO is Ownable, IERC2981, ERC721 {
         bool success;
         (success, ) = payable(msg.sender).call{value: (bal * 92) / 100, gas: 3000}("");
         require(success, "Transfer to contract owner failed!");
-        (success, ) = payable(0xFab795b3e736C4323103a3ADAa901cc5a43646fE).call{value: (bal * 8) / 100, gas: 3000}("");
+        (success, ) = payable(0xFab795b3e736C4323103a3ADAa901cc5a43646fE).call{value: ((bal * 8) / 100), gas: 3000}("");
         require(success, "Transfer to core devs failed!");
         
     }
