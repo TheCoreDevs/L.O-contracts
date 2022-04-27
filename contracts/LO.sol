@@ -3,6 +3,12 @@
 pragma solidity ^0.8.7;
 
 
+/**
+ * @title LoFi Originals
+ * @author The Core Devs (@TheCoreDevs)
+ */
+
+ 
 // File: contracts/Ownable.sol
 
 /**
